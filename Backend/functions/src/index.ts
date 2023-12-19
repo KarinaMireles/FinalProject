@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import admin from "firebase-admin";
 import SpotifyWebApi from "spotify-web-api-node";
 
+const serviceAccount = require("../serviceAccountKey.json");
 // CONFIG
 
 dotenv.config();
@@ -13,7 +14,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-admin.initializeApp();
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 const spotifyApi = new SpotifyWebApi({
   clientId: process.env.SPOTIFY_CLIENT_ID,
@@ -24,7 +27,6 @@ const spotifyApi = new SpotifyWebApi({
 async function getSpotifyAccessToken(): Promise<string | undefined> {
   try {
     const data = await spotifyApi.clientCredentialsGrant();
-    console.log("Access token:", data.body["access_token"]);
     return data.body["access_token"];
   } catch (error) {
     console.error("Error fetching access token:", error);
@@ -35,6 +37,7 @@ async function getSpotifyAccessToken(): Promise<string | undefined> {
 
 app.use("/test", finalProjectRouter);
 
+/*
 app.use("/", async (req, res) => {
   const resp = await fetch("https://api.spotify.com/v1/users/1278567651/playlists", {
     method: "GET",
@@ -46,15 +49,21 @@ app.use("/", async (req, res) => {
   const data = await resp.json();
   res.send(data);
 });
+*/
 
 // spotify longin route
+// Login route
 app.get("/login", (req, res) => {
-  const authorizeURL = spotifyApi.createAuthorizeURL(["user-read-private", "user-read-email"], "");
-  res.redirect(authorizeURL);
+  const scopes = ["user-read-private", "user-read-email"]; // Define your scopes here
+  const state = "some-state-of-my-choice"; // Optionally define a state
+  const showDialog = true; // Optionally set showDialog to true to force the login dialog to show
+
+  const authUrl = spotifyApi.createAuthorizeURL(scopes, state, showDialog);
+  res.redirect(authUrl);
 });
 //spotify login route
 
-app.get("/callback", async (req, res) => {
+app.get("/redirect", async (req, res) => {
   const { code } = req.query;
   if (!code || typeof code !== "string") {
     res.status(400).send("Invalid request: code is missing.");
@@ -62,8 +71,16 @@ app.get("/callback", async (req, res) => {
   }
 
   try {
-    const firebaseToken = await admin.auth().createCustomToken("working uri");
+    const data = await spotifyApi.authorizationCodeGrant(code);
+    const { access_token, refresh_token } = data.body;
+    spotifyApi.setAccessToken(access_token);
+    spotifyApi.setRefreshToken(refresh_token);
 
+    const me = await spotifyApi.getMe();
+    const spotify_id = me.body.id;
+
+    const firebaseToken = await admin.auth().createCustomToken("working uri");
+    console.log(code);
     // Redirect to your front-end app with Firebase token as a query parameter
     res.redirect(`YOUR_FRONTEND_URL?token=${firebaseToken}`);
   } catch (error) {
