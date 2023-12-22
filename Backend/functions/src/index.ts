@@ -76,8 +76,8 @@ app.get("/redirect", async (req, res) => {
     spotifyApi.setAccessToken(access_token);
     spotifyApi.setRefreshToken(refresh_token);
 
-    const me = await spotifyApi.getMe();
-    const spotify_id = me.body.id;
+    // const me = await spotifyApi.getMe();
+    // const spotify_id = me.body.id;
 
     const firebaseToken = await admin.auth().createCustomToken("working uri");
     console.log(code);
