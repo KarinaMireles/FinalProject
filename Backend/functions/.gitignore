@@ -10,5 +10,3 @@ node_modules/
 .runtimeconfig.json
 .env
 serviceAccountKey.json
-
-
