@@ -10,5 +10,5 @@ node_modules/
 .runtimeconfig.json
 .env
 serviceAccountKey.json
-
+firebase-debug.log
 
