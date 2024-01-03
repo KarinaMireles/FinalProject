@@ -1,11 +1,11 @@
-import mongoose, { Schema } from "mongoose"
+import mongoose from "mongoose"
 
 const UserProfileSchema = new mongoose.Schema(
 	{
-        uid: {
-            type: String,
-            required: true
-        },
+        // uid: {
+        //     type: String,
+        //     required: true
+        // },
         spotifyUserId: {
             type: String,
             required: true
@@ -76,5 +76,5 @@ UserProfileSchema.set("toJSON", {
 	}
 })
 
-const UserProfile = mongoose.model("Final_Project", UserProfileSchema)
+const UserProfile = mongoose.model("User_Profile", UserProfileSchema)
 export default UserProfile

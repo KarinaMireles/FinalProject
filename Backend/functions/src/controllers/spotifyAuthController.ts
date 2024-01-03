@@ -37,7 +37,7 @@ export const redirect = async (req: Request, res: Response) => {
 
     const firebaseToken = await admin.auth().createCustomToken(spotify_id); // ties spotify id to firebase id
     // Redirect to your front-end app with Firebase token as a query parameter
-    res.redirect(`YOUR_FRONTEND_URL?token=${firebaseToken}`);
+    res.redirect(`http://localhost:5173/profile?token=${firebaseToken}`);
   } catch (error) {
     res.status(400).send(`Error: ${error}`);
   }
