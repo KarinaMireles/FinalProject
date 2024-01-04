@@ -6,7 +6,7 @@ import admin from "firebase-admin";
 import spotifyAuthRoutes from "./routes/spotifyAuthRouter";
 import mongoose from "mongoose";
 import finalProjectRouter from "./routes/finalProjectRouter";
-import userProfileRouter from "./routes/userProfileRouter"
+// import userProfileRouter from "./routes/userProfileRouter"
 
 dotenv.config();
 const app = express();
@@ -26,7 +26,7 @@ app.use("/", spotifyAuthRoutes);
 app.use("/test", finalProjectRouter);
 
 // USER
-app.use("/user", userProfileRouter)
+// app.use("/user", userProfileRouter);
 
 app.get("/health", async (req, res) => {
   if (mongoose.connection.readyState === 1) {
