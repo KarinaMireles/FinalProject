@@ -2,7 +2,7 @@
 import { Request, Response } from "express";
 import SpotifyWebApi from "spotify-web-api-node";
 import admin from "firebase-admin";
-import { UserProfileService } from "../services/UserProfileService";
+import { createUserProfile } from "../services/UserProfileService";
 // import { findOrCreateUser } from "./userProfile";
 
 const spotifyApi = new SpotifyWebApi({
@@ -38,10 +38,10 @@ export const redirect = async (req: Request, res: Response) => {
     const spotifyUserId = me.body.uri; // spotify idi
     const displayName = me.body.display_name || "test name"; // spotify display name
 
-    await UserProfileService.createUserProfile(spotifyUserId, displayName);
+    const user = await createUserProfile(spotifyUserId, displayName);
     const firebaseToken = await admin.auth().createCustomToken(spotifyUserId + displayName); // ties spotify id to firebase id
     // Redirect to your front-end app with Firebase token as a query parameter
-    res.redirect(`http://localhost:5173/profile?token=${firebaseToken}`);
+    res.redirect(`http://localhost:5173/login?token=${firebaseToken}&id=${user.id}`);
     //consider changing firebase token to spotify id
   } catch (error) {
     res.status(400).send(`Error: ${error}`);
