@@ -1,12 +1,12 @@
-// import { Router } from "express";
-// import { postUser, getUsers, getUser, putUser, deleteUser } from "../controllers/userProfile";
+import { Router } from "express";
+import { postUser, getUsers, getUser, putUser, deleteUser } from "../controllers/userProfile";
 
-// const router = Router();
+const router = Router();
 
-// router.post("/", postUser);
-// router.get("/", getUsers);
-// router.get("/:id", getUser);
-// router.put("/:id", putUser);
-// router.delete("/:id", deleteUser);
+router.post("/", postUser);
+router.get("/", getUsers);
+router.get("/:id", getUser);
+router.put("/:id", putUser);
+router.delete("/:id", deleteUser);
 
-// export default router;
+export default router;

@@ -9,47 +9,47 @@ const UserProfileSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  username: {
+  displayName: {
     type: String,
     required: true,
   },
   dob: {
     type: String,
-    required: true,
+    required: false,
   },
   gender: {
     type: String,
-    required: true,
+    required: false,
   },
   genderPreference: {
     type: String,
-    required: true,
+    required: false,
   },
   location: {
     type: String,
-    required: true,
+    required: false,
   },
   profilePictures: [
     {
       type: String,
-      required: true,
+      required: false,
     },
   ],
   bio: {
     type: String,
     required: false,
   },
-  preferences: {
-    genres: {
-      type: [String],
-    },
-    artists: {
-      type: [String],
-    },
-  },
+  // preferences: {
+  //   genres: {
+  //     type: [String],
+  //   },
+  //   artists: {
+  //     type: [String],
+  //   },
+  // },
   status: {
     type: String,
-    required: true,
+    required: false,
   },
 });
 
