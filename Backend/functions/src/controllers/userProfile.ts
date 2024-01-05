@@ -36,8 +36,8 @@ export const getUsers: ReqRes = async (req, res) => {
 export const getUser: ReqRes = async (req, res) => {
   try {
     await establishConnection();
-    const users = await UserProfile.find();
-    res.status(200).send(users);
+    const user = await UserProfile.findById(req.params.id);
+    res.status(200).send(user);
   } catch (err) {
     res.status(500).send("User not found");
   }
