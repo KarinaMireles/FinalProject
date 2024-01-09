@@ -37,8 +37,12 @@ export const redirect = async (req: Request, res: Response) => {
 
     const spotifyUserId = me.body.uri; // spotify idi
     const displayName = me.body.display_name || "test name"; // spotify display name
+    const topArtists = (await spotifyApi.getMyTopArtists()).body.items.map((artistObj) => ({
+      name: artistObj.name,
+      genres: artistObj.genres,
+    }));
 
-    const user = await createUserProfile(spotifyUserId, displayName);
+    const user = await createUserProfile(spotifyUserId, displayName, topArtists);
     const firebaseToken = await admin.auth().createCustomToken(spotifyUserId + displayName); // ties spotify id to firebase id
     // Redirect to your front-end app with Firebase token as a query parameter
     res.redirect(`http://localhost:5173/login?token=${firebaseToken}&id=${user.id}`);

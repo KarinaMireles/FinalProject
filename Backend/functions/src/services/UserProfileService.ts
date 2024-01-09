@@ -1,16 +1,25 @@
 import establishConnection from "../establishConnection";
 import UserProfile from "../models/UserProfile";
 
-export const createUserProfile = async (spotifyUserId: string, displayName: string): Promise<any> => {
+type ArtistInfo = {
+  name: string;
+  genres: string[];
+};
+
+export const createUserProfile = async (
+  spotifyUserId: string,
+  displayName: string,
+  topArtists: ArtistInfo[]
+): Promise<any> => {
   await establishConnection();
   try {
     let user = await UserProfile.findOne({ spotifyUserId });
-    if (!user) user = await UserProfile.create({ spotifyUserId, displayName });
-    return user
+    if (!user) user = await UserProfile.create({ spotifyUserId, displayName, topArtists });
+    return user;
   } catch (err) {
     return "Error: " + err;
   }
-}
+};
 
 // export class UserProfileService {
 //   static async createUserProfile(

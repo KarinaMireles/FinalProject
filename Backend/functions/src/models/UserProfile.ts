@@ -39,14 +39,15 @@ const UserProfileSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  // preferences: {
-  //   genres: {
-  //     type: [String],
-  //   },
-  //   artists: {
-  //     type: [String],
-  //   },
-  // },
+  topArtists: [
+    {
+      name: {
+        type: String,
+        required: true,
+      },
+      genres: [String], // An array of strings for genres
+    },
+  ],
   status: {
     type: String,
     required: false,
