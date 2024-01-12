@@ -9,22 +9,43 @@ export interface ReqRes {
 // CREATE new User
 
 export const postUser: ReqRes = async (req, res) => {
-    try {
-        await establishConnection()
-        const user = await UserProfile.create(req.body)
-        res.status(201).send(user)
-    } catch (err) {
-        console.log(err)
-        res.status(401).send("Bad Request")
-    }
-}
+  try {
+    await establishConnection();
+    const user = await UserProfile.create(req.body);
+    res.status(201).send(user);
+  } catch (err) {
+    console.log(err);
+    res.status(401).send("Bad Request");
+  }
+};
 
 // READ ALL
 
 export const getUsers: ReqRes = async (req, res) => {
   try {
     await establishConnection();
-    const users = await UserProfile.find();
+    const { myId } = req.query;
+    const me = await UserProfile.findById(myId);
+    if (!me) throw new Error("User not found");
+    const referenceArtists = me.topArtists.map((artist) => artist.name);
+    const referenceGenres = me.topArtists.flatMap((artist) => artist.genres);
+
+    const users = await UserProfile.find({ _id: { $ne: myId } });
+    users.sort((a, b) => {
+      const aArtistMatch = a.topArtists.some((artist) => referenceArtists.includes(artist.name));
+      const bArtistMatch = b.topArtists.some((artist) => referenceArtists.includes(artist.name));
+
+      if (aArtistMatch && !bArtistMatch) return -1;
+      if (!aArtistMatch && bArtistMatch) return 1;
+
+      const aGenreMatch = a.topArtists.some((artist) => artist.genres.some((genre) => referenceGenres.includes(genre)));
+      const bGenreMatch = b.topArtists.some((artist) => artist.genres.some((genre) => referenceGenres.includes(genre)));
+
+      if (aGenreMatch && !bGenreMatch) return -1;
+      if (!aGenreMatch && bGenreMatch) return 1;
+
+      return 0;
+    });
     res.status(200).send(users);
   } catch (err) {
     res.status(500).send("Server Error");
