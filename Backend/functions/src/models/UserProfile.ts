@@ -13,7 +13,7 @@ const UserProfileSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  dob: {
+  age: {
     type: String,
     required: false,
   },
@@ -39,6 +39,16 @@ const UserProfileSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  likedUsers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+  ],
+  dislikedUsers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+  ],
   topArtists: [
     {
       name: {
